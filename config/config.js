@@ -10,5 +10,6 @@ const config = {
             scope:'jira',
             token:"asdadajsdhajsdhajhd1231231JHHSDAKSAJDHAKSJDH234"
         }]
+        
 };
 module.exports = config;

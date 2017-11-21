@@ -28,7 +28,7 @@ Should be an array of iprange objects, the only requires property is netmask,
 ]
 ```
 ### Netmask format ###
-Netmaks can be give on the following forms:
+Netmasks can be give on the following forms:
 
 ```
 '216.240.32.0/24'               // The preferred form.
@@ -42,3 +42,8 @@ Netmaks can be give on the following forms:
 '216.240.32/24'
 '216.240/16'
 ```
+
+## Excel import ## 
+
+You can upload an excel sheet by posting to upload, at present you can not configure the import. It expects the spreadsheet be formatted as IP_Plan_YE.xls
+
