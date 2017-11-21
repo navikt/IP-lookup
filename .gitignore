@@ -6,10 +6,10 @@ lib-cov
 *.out
 *.pid
 *.gz
-
+workfolder
 pids
 logs
 results
-
+config/config.js
 node_modules
 npm-debug.log

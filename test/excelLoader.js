@@ -1,6 +1,6 @@
 const fs = require('fs');
 const _ = require('underscore');
-let excelReader = require('./module/excelReader')({
+let excelReader = require('../module/excelReader')({
     filename: 'data/IP-plan_NAV_YE.xls',
     sheetname: 'IP_Plan_YE',
     rowConfig: {

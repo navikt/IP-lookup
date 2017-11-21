@@ -14,4 +14,22 @@ module.exports = [{
   method: 'GET',
   path: '/lookup/{ipaddress}',
   handler: iphandler.lookup
+},{
+  method:'POST',
+  path:'/upload',
+  config: {
+
+        payload: {
+           maxBytes: 1000 * 1000 * 100, // 100 Mb
+            output: 'stream',
+            parse: true,
+            allow: 'multipart/form-data'
+        },
+      handler:iphandler.upload
+  }
+}
+  ,{
+  method:'POST',
+  path:'/reload',
+      handler:iphandler.reload
 }];
