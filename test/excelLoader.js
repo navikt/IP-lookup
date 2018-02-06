@@ -78,7 +78,7 @@ excelReader.on('end', function(result) {
             });
         }
     });
-    fs.writeFileSync('data/ipranges.json', JSON.stringify(r, null, 4));
+    //fs.writeFileSync('data/ipranges.json', JSON.stringify(r, null, 4));
 
 });
 excelReader.read();

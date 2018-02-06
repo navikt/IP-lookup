@@ -16,6 +16,7 @@ describe('server', function() {
         server.start();
         allranges = readFile();
     });
+    
     describe("#Lookup", function() {
         it("Should have a hit", function(done) {
             request("http://mvollset-nav-ip-lookup-5633908:8080/lookup/10.202.10.12",
@@ -23,6 +24,17 @@ describe('server', function() {
                     let result = JSON.parse(body);
                     expect(result.success).to.equal(true);
                     expect(result.iprange.name).to.equal("0617");
+                    expect(error).to.equal(null);
+                    expect(response.statusCode).to.equal(200);
+                    done();
+                });
+        });
+         it("Should have somehits", function(done) {
+            request("http://mvollset-nav-ip-lookup-5633908:8080/lookupname/0125",
+                function(error, response, body) {
+                    let result = JSON.parse(body);
+                    expect(result.success).to.equal(true);
+                    expect(result.ipranges).to.be.an("array");
                     expect(error).to.equal(null);
                     expect(response.statusCode).to.equal(200);
                     done();
@@ -63,6 +75,25 @@ describe('server', function() {
 
             done();
         });
+      it("Should add an endpoint",function(done){
+             request({
+                 uri:"http://mvollset-nav-ip-lookup-5633908:8080/endpoint",
+                 json:true,
+                 method:'POST',
+                 body:{
+                     netmask:"127.0.21.0/255.255.255.0",
+                     name:"Almost local",
+                     
+                 }
+                 
+             },
+                        function(error, response, body) {
+                            expect(body.success).to.equal(true);
+                            expect(response.statusCode).to.equal(200);
+                             done();
+                        });
+                        
+      });
     });
     after(function() {
         server.stop();

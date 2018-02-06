@@ -12,7 +12,7 @@ The list of netmasks is based on the file data/ipranges.json any additional attr
 mv:~/workspace (master) $ curl  http://localhost:8080/lookup/10.208.21.12
 {"success":true,"found":true,"iprange":{"netmask":"10.208.21.0/255.255.255.0","name":"0136","type":"PUB"}}
 ## ipranges.json ##
-Should be an array of iprange objects, the only requires property is netmask, 
+Should be an array of iprange objects, the only required property is netmask, 
 ```json
 [
     {
@@ -45,5 +45,50 @@ Netmasks can be give on the following forms:
 
 ## Excel import ## 
 
-You can upload an excel sheet by posting to upload, at present you can not configure the import. It expects the spreadsheet be formatted as IP_Plan_YE.xls
+You can upload an excel sheet by posting to upload, at present you can not configure the import. It expects the spreadsheet be formatted as IP_Plan_YE.xls 
+If you need to change the import format, you can edit the excelLoader.js in the module folder. excelLoader uses the excelReader module and can be configured like this:
+## Excelreader ## 
+
+reads an excel spreadsheet and emits the rows as objects. Takes an object with following options:
+filename = Excel filename
+sheetname= Name of spreadsheet to import from
+rowConfig Hash with the emitted properties as key e.g.
+```js
+"col1":{
+    cell:"B"
+}
+```
+will emit an object with col1 with values from column B
+
+You can also use value to emit a fixed value, or func which is a function that get the sheet and rownumber as parameters.
+```js
+//Fixed value
+"constant":{
+    value:"CONSTANT"
+},
+//Function 
+"40CharColumn":{
+    func:function(sheet,rownum){
+        var cell = sheet["B" + rownum.toString()];
+        var v = cell.v;
+        if (v.length < 40)
+                 return v;
+        return v.substr(0, 37) + "...";
+    }
+}
+```
+You can also supply a filter that decide the row should be included in the output. 
+
+```js
+    filter: function(sheet, rownum) {
+            var cell = sheet["A" + rownum.toString()];
+            if (cell && cell.v == "x")
+                return true;
+            return false;
+        }
+```
+The module emits each row as it get processed as well as an end event when the whole file is read. 
+
+Emits "row" event for each row and "end" when the last row is read
+
 

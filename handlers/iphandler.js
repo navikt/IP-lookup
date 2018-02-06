@@ -4,7 +4,7 @@ const Netmask = require('netmask').Netmask;
 const tmp = require('tmp');
 const excelLoader = require("../module/excelLoader");
 let rangetree = new Map();
-
+let sitelist = new Map();
 function readFile() {
     const iprangesStr = fs.readFileSync('./data/ipranges.json');
     let ipranges = JSON.parse(iprangesStr);
@@ -15,6 +15,15 @@ function readFile() {
 
 function putAddress(iprange) {
     let curmap = rangetree;
+    if(!sitelist.has(iprange.name)){
+        sitelist.set(iprange.name,[iprange])
+    }
+    else{
+        let p= sitelist.get(iprange.name);
+        p.push(iprange);
+        sitelist.set(iprange.name,p);
+    }
+    try{
     let block = new Netmask(iprange.netmask);
     let maskparts = block.mask.split('.');
     let baseparts = block.base.split('.');
@@ -44,8 +53,15 @@ function putAddress(iprange) {
     }
     else
         curmap.set(-1, [{ iprange: iprange, block: block }]);
+    }
+    catch(error){
+        console.log("Failed to read range:" + iprange.netmask);
+    }
 }
-
+function lookupName(name){
+    let found = sitelist.has(name);
+    return found?sitelist.get(name):false;
+}
 function lookupAddress(ipaddress) {
     let parts = ipaddress.split('.').map(function(s) {
         return parseInt(s, 10);
@@ -84,6 +100,17 @@ module.exports.lookup = function(request, reply) {
     var r = lookupAddress(ipaddress);
     request.log(["debug"], r);
     reply({ success: true, found: (r !== false), iprange: r });
+};
+module.exports.lookupName = function(request, reply) {
+    const name = request.params.name;
+    var r = lookupName(name);
+    request.log(["debug"], r);
+    reply({ success: true, found: (r !== false), ipranges: r });
+};
+module.exports.addEndpoint = function(request, reply){
+    let p = request.payload;
+    putAddress(p);
+    reply({ success: true, iprange: p });
 };
 module.exports.upload = function(request, reply) {
     let data = request.payload;
